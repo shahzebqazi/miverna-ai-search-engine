@@ -1,7 +1,11 @@
 {
   "name": "perplexity-killer",
   "private": true,
-  "description": "Root scripts forward to apps/desktop (Minerva Tauri + SvelteKit)",
+  "description": "Minerva monorepo: master Svelte UI, IR, macOS codegen, legacy Tauri app",
+  "workspaces": [
+    "packages/*",
+    "tools/*"
+  ],
   "scripts": {
     "dev": "npm run dev --prefix apps/desktop",
     "build": "npm run build --prefix apps/desktop",
@@ -10,6 +14,13 @@
     "tauri": "npm run tauri --prefix apps/desktop",
     "tauri:dev": "npm run tauri dev --prefix apps/desktop",
     "install:mlx-server": "python3 -m pip install --user mlx-openai-server",
-    "download-model:nemotron": "bash scripts/download-nemotron-model.sh"
+    "download-model:nemotron": "bash scripts/download-nemotron-model.sh",
+    "ir:build": "npm run build --workspace=@minerva/ir",
+    "codegen": "npm run build --workspace=@minerva/codegen && node tools/codegen/dist/cli.js",
+    "codegen:macos": "npm run codegen -- --ir packages/minerva-ir/fixtures/default.ir.json --emit macos --out generated/macos",
+    "ui:master:dev": "npm run dev --workspace=@minerva/ui-master",
+    "ui:master:build": "npm run build --workspace=@minerva/ui-master",
+    "ui:master:preview": "npm run preview --workspace=@minerva/ui-master",
+    "test:codegen": "npm test --workspace=@minerva/codegen"
   }
 }

@@ -32,8 +32,10 @@ jobs:
 
       - name: Build ui-master for GitHub Pages
         env:
-          # Must match the repository name (project pages URL: /REPO/)
-          MINERVA_PAGES_BASE: /miverna-ai-search-engine
+          # Project site: https://<owner>.github.io/<repo>/ — base must be /repo-name
+          MINERVA_PAGES_BASE: /${{ github.event.repository.name }}
+          # So the Docs hub can link to markdown on GitHub (blob view)
+          PUBLIC_DOCS_REPO_BROWSE: https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}
         run: npm run ui:master:build
 
       - uses: actions/upload-pages-artifact@v3

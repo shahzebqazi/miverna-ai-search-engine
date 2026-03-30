@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Rust
+**/target/
+**/*.rs.bk
+
+# SvelteKit / Vite
+.svelte-kit/
+dist/
+.vite/
+
+# macOS / Xcode
+.DS_Store
+*.xcuserstate
+xcuserdata/
+DerivedData/
+*.swiftpm/
+
+# Generated app output (regenerate with tools/codegen)
+generated/macos/
+
+# Env / secrets
+.env
+.env.*
+
+# IDE
+.idea/
+.cursor/
+
+# Logs / caches
+*.log
+.cache/

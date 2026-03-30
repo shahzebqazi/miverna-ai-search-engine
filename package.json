@@ -1,0 +1,15 @@
+{
+  "name": "perplexity-killer",
+  "private": true,
+  "description": "Root scripts forward to apps/desktop (Minerva Tauri + SvelteKit)",
+  "scripts": {
+    "dev": "npm run dev --prefix apps/desktop",
+    "build": "npm run build --prefix apps/desktop",
+    "preview": "npm run preview --prefix apps/desktop",
+    "check": "npm run check --prefix apps/desktop",
+    "tauri": "npm run tauri --prefix apps/desktop",
+    "tauri:dev": "npm run tauri dev --prefix apps/desktop",
+    "install:mlx-server": "python3 -m pip install --user mlx-openai-server",
+    "download-model:nemotron": "bash scripts/download-nemotron-model.sh"
+  }
+}

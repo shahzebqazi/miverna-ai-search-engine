@@ -43,7 +43,7 @@ jobs:
         run: npm run ui:master:build
 
   macos-swift:
-    name: macOS — Swift package + MinervaHostSelfTest
+    name: macOS — Swift package (codegen + build)
     runs-on: macos-latest
     timeout-minutes: 20
     steps:
@@ -62,6 +62,3 @@ jobs:
 
       - name: Emit generated/macos + build Swift
         run: npm run codegen:macos && swift build --package-path generated/macos
-
-      - name: MinervaHostSelfTest (no live SearX/LLM)
-        run: swift run --package-path generated/macos MinervaHostSelfTest

@@ -128,13 +128,32 @@ final class WebViewHost: NSObject, WKNavigationDelegate, WKScriptMessageHandler 
         self.webView.setValue(false, forKey: "drawsBackground")
     }
 
+    /// SPM processed resources: \`${ir.app.executableModule}_${ir.app.executableModule}.bundle\` next to the executable.
+    /// Avoids \`Bundle.module\`, which some SwiftPM toolchains omit for executable targets (e.g. GitHub Actions).
+    private static func resourcesBundle() -> Bundle {
+        let main = Bundle.main
+        let bundleName = "${ir.app.executableModule}_${ir.app.executableModule}.bundle"
+        let dirs: [URL] = [
+            main.resourceURL,
+            main.executableURL?.deletingLastPathComponent(),
+        ].compactMap { $0 }
+        for dir in dirs {
+            let url = dir.appendingPathComponent(bundleName)
+            if let b = Bundle(url: url),
+               b.url(forResource: "index", withExtension: "html", subdirectory: "Web") != nil {
+                return b
+            }
+        }
+        return main
+    }
+
     func loadBundledOrDev() {
         if let dev = ProcessInfo.processInfo.environment["MINERVA_DEV_WEB_URL"],
            let u = URL(string: dev) {
             webView.load(URLRequest(url: u))
             return
         }
-        let module = Bundle.module
+        let module = Self.resourcesBundle()
         if let idx = module.url(forResource: "index", withExtension: "html", subdirectory: "Web") {
             webView.loadFileURL(idx, allowingReadAccessTo: idx.deletingLastPathComponent())
             return

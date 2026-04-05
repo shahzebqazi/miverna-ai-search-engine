@@ -567,6 +567,126 @@ export const paperCitationLinks: Array<{
     relationNote:
       "Negation in neural IR is evaluated on cross-encoders and bi-encoders derived from BERT.",
   },
+  {
+    arxivId: "2310.03128",
+    canonicalKey: "yao-2023-react",
+    relationNote:
+      "MetaTool evaluates when to invoke external tools (e.g. search)—same decision loop as agentic search.",
+  },
+  {
+    arxivId: "2509.06501",
+    canonicalKey: "yao-2023-react",
+    relationNote:
+      "Long-horizon web agents interleave browsing and search actions like ReAct-style tool use.",
+  },
+  {
+    arxivId: "2508.05668",
+    canonicalKey: "lewis-2020-rag",
+    relationNote:
+      "Deep search agent surveys organize retrieval-augmented generation and web tool pipelines.",
+  },
+  {
+    arxivId: "2407.15711",
+    canonicalKey: "yao-2023-react",
+    relationNote:
+      "Web agents map to reasoning + acting over browser/search tools.",
+  },
+  {
+    arxivId: "2507.16692",
+    canonicalKey: "devlin-2019-bert",
+    relationNote:
+      "Search explanations from LLMs build on transformer language understanding of query–document text.",
+  },
+  {
+    arxivId: "2311.09513",
+    canonicalKey: "lewis-2020-rag",
+    relationNote:
+      "Generate-retrieve-generate is a variant ordering of the RAG retrieve-then-read stack.",
+  },
+  {
+    arxivId: "2410.22349",
+    canonicalKey: "saracevic-2006-relevance",
+    relationNote:
+      "Critique of verifiable citations ties to user-oriented relevance and trust in search results.",
+  },
+  {
+    arxivId: "2412.03573",
+    canonicalKey: "reimers-gurevych-2019-sbert",
+    relationNote:
+      "Tool retrieval uses dense semantic matching analogous to sentence-embedding retrieval.",
+  },
+  {
+    arxivId: "2503.01763",
+    canonicalKey: "robertson-zaragoza-2009-bm25",
+    relationNote:
+      "Tool retrieval benchmarks compare IR models—lexical baselines remain part of hybrid tool search.",
+  },
+  {
+    arxivId: "2502.11435",
+    canonicalKey: "brown-2020-gpt3",
+    relationNote:
+      "Tool overuse mitigation concerns parametric vs tool-augmented knowledge tradeoffs in LLMs.",
+  },
+  {
+    arxivId: "2310.19056",
+    canonicalKey: "lewis-2020-rag",
+    relationNote:
+      "Mutual verification for query expansion conditions generation on retrieved-like evidence, as in RAG.",
+  },
+  {
+    arxivId: "2207.12768",
+    canonicalKey: "belkin-1980-ask",
+    relationNote:
+      "Clarification before search operationalizes resolving anomalous states of knowledge.",
+  },
+  {
+    arxivId: "2401.15884",
+    canonicalKey: "lewis-2020-rag",
+    relationNote:
+      "CRAG augments standard RAG with corrective actions when retrieval fails—extends Lewis et al. framing.",
+  },
+  {
+    arxivId: "2401.15884",
+    canonicalKey: "page-1999-pagerank",
+    relationNote:
+      "Large-scale web search fallback in CRAG connects to open-web retrieval beyond static corpora.",
+  },
+  {
+    arxivId: "2310.11511",
+    canonicalKey: "lewis-2020-rag",
+    relationNote:
+      "Self-RAG selectively retrieves and critiques—same non-parametric knowledge axis as RAG.",
+  },
+  {
+    arxivId: "2004.12832",
+    canonicalKey: "khattab-zaharia-2020-colbert",
+    relationNote:
+      "ColBERT late interaction is a standard recall/rerank layer in modern neural search stacks.",
+  },
+  {
+    arxivId: "1908.10084",
+    canonicalKey: "reimers-gurevych-2019-sbert",
+    relationNote:
+      "Sentence-BERT is the cited sentence-embedding method for efficient semantic retrieval.",
+  },
+  {
+    arxivId: "2008.10889",
+    canonicalKey: "devlin-2019-bert",
+    relationNote:
+      "Intent description generation uses encoder-style LMs for query understanding before retrieval.",
+  },
+  {
+    arxivId: "2509.21106",
+    canonicalKey: "joachims-2002-svm-click",
+    relationNote:
+      "Personalized search-augmented LLMs relate to implicit feedback and preference signals in IR.",
+  },
+  {
+    arxivId: "2603.08117",
+    canonicalKey: "yao-2023-react",
+    relationNote:
+      "Unindexed information seeking uses agent loops with tools beyond standard web indexes.",
+  },
 ];
 
 // Remaining papers array is in seedPapersList.ts to keep files manageable.

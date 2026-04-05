@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { openUrl, revealItemInDir } from "@tauri-apps/plugin-opener";
-  import { invokeSafe, isTauriRuntime } from "$lib/tauri-invoke";
+  import { invokeSafe, isTauriRuntime, NOT_IN_TAURI_MESSAGE } from "$lib/tauri-invoke";
   import { normalizeSearxBaseUrl } from "$lib/public-searx";
   import type { AppSettings, SearxBuiltinStatus, SearxHit } from "$lib/types";
   import { normalizeSearxResults, formatDomain } from "$lib/searx";
@@ -449,6 +449,13 @@
     ev.preventDefault();
     const q = query.trim();
     if (!q || loading) return;
+    if (!isTauriRuntime()) {
+      errorMsg = NOT_IN_TAURI_MESSAGE;
+      searched = true;
+      hits = [];
+      tabHits = emptyTabBundle();
+      return;
+    }
     loading = true;
     errorMsg = null;
     overviewSourceCount = 0;
@@ -819,7 +826,7 @@
         <p class="hero-tagline">{heroTagline}</p>
       {/if}
       <p class="hero-sub">
-        A SearXNG instance managed by Minerva (Docker on your machine by default) fills the Search and vertical tabs; the Overview tab pairs your question with those hits on-device when the local LLM is running.
+        A SearXNG instance managed by Minerva (Docker on your machine by default) fills the Search and vertical tabs; the Overview tab asks the local model to summarize using those hits when the LLM is running—verify important claims against the linked sources.
       </p>
       <div class="hero-search-stack">
         <form class="omnibar-form" onsubmit={runSearch}>
@@ -831,7 +838,7 @@
           {/if}
         </form>
         <p class="hero-hint">
-          <kbd>Enter</kbd> to submit · Overview cites SearXNG sources by number · Search tab is raw results
+          <kbd>Enter</kbd> to submit · Overview uses [n] markers tied to the source list below · Search tab is raw results
         </p>
         <div class="hero-model-context-row">
           <ModelModeBar bind:selectedModel bind:workMode />
@@ -992,8 +999,8 @@
                       </div>
                     {/if}
                     <span class="answer-meta">
-                      {overviewSourceCount} hit(s) sent to model (all verticals, deduped) · LLM picks
-                      relevant [n]
+                      {overviewSourceCount} hit(s) sent to model (all verticals, deduped) · [n] refers to
+                      sources below; the model may skip irrelevant links
                     </span>
                   </div>
                 </div>

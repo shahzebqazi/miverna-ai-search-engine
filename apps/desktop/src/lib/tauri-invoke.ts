@@ -9,7 +9,8 @@ export type InvokeResult<T> =
   | { ok: true; data: T }
   | { ok: false; message: string };
 
-const BROWSER_MESSAGE =
+/** Shown when code calls `invoke` outside the Tauri webview (e.g. Vite-only browser tab). */
+export const NOT_IN_TAURI_MESSAGE =
   "This view is not running inside the Minerva desktop app. Open Minerva from a Tauri build to search via SearXNG and sync settings with the host.";
 
 export async function invokeSafe<T>(
@@ -17,7 +18,7 @@ export async function invokeSafe<T>(
   args?: Record<string, unknown>,
 ): Promise<InvokeResult<T>> {
   if (!isTauriRuntime()) {
-    return { ok: false, message: BROWSER_MESSAGE };
+    return { ok: false, message: NOT_IN_TAURI_MESSAGE };
   }
   try {
     const data =

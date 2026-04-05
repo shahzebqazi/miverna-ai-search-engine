@@ -429,11 +429,11 @@ fn searx_custom_failure_eligible_for_docker_fallback(err: &SearxFetchErr) -> boo
             if *code == 429 {
                 return false;
             }
+            if *code == 200 {
+                return !searx_json_body_ok(body);
+            }
             if *code == 403 || *code == 401 {
                 return true;
-            }
-            if *code == 200 {
-                return false;
             }
             if searx_json_body_ok(body) {
                 return false;
@@ -471,6 +471,21 @@ fn format_searx_user_error(base_trim: &str, builtin_style_errors: bool, err: &Se
         SearxFetchErr::Transport(msg) => msg.clone(),
         SearxFetchErr::Http { code, body } => {
             let loopback_target = parse_loopback_http_target(base_trim);
+            if *code == 200 {
+                let hint = if loopback_target.is_some() {
+                    "HTTP 200 but the body is not JSON: something on that loopback host:port is not SearXNG (wrong port, wrong container, or a proxy returning HTML). Check Settings host port, run `docker ps` or `lsof -i :PORT`, then Restart search engine."
+                } else if builtin_style_errors {
+                    "HTTP 200 but the body is not JSON: built-in SearXNG should return JSON at /search?format=json. Try Restart search engine or inspect Docker logs in Settings."
+                } else {
+                    "HTTP 200 but the body is not JSON at /search?format=json. Try another base URL or enable built-in Docker search in Settings."
+                };
+                return format!(
+                    "SearXNG expected JSON starting with `{{` or `[`, but got: {}.\n\n{}\n\n[{}]",
+                    searx_error_body_preview(body),
+                    hint,
+                    SEARX_STACK_TAG
+                );
+            }
             let hint = if *code == 429 {
                 if builtin_style_errors {
                     "The built-in instance returned rate limiting (unusual). Retry shortly or restart the search engine in Settings."
@@ -576,13 +591,19 @@ async fn searx_fetch_json_response(
             let code = status.as_u16();
             let body = res.text().await.unwrap_or_default();
             if code == 200 {
-                return Ok(body);
+                if searx_json_body_ok(&body) {
+                    return Ok(body);
+                }
+                return Err(SearxFetchErr::Http { code: 200, body });
             }
             (code, body)
         };
 
         if code == 200 {
-            return Ok(body);
+            if searx_json_body_ok(&body) {
+                return Ok(body);
+            }
+            return Err(SearxFetchErr::Http { code: 200, body });
         }
         if code == 429 && attempt < 3 {
             let wait_ms = 900u64 + 850u64 * u64::from(attempt);
@@ -1609,6 +1630,42 @@ mod searx_fetch_tests {
         assert!(json.contains("example.test"));
     }
 
+    #[tokio::test]
+    async fn searx_fetch_json_loopback_200_html_errors() {
+        let listener = TcpListener::bind("127.0.0.1:0").await.expect("bind mock");
+        let port = listener.local_addr().expect("addr").port();
+        let body = "<html><body>not json</body></html>";
+        let response = format!(
+            "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+            body.len(),
+            body
+        );
+        let response_bytes = response.into_bytes();
+
+        tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.expect("accept");
+            let mut buf = vec![0u8; 16_384];
+            let _ = stream.read(&mut buf).await;
+            stream
+                .write_all(&response_bytes)
+                .await
+                .expect("write mock response");
+            let _ = stream.shutdown().await;
+        });
+
+        let client = searx_async_client_builder(Duration::from_secs(5))
+            .build()
+            .expect("client");
+        let base = format!("http://127.0.0.1:{port}");
+        let err = searx_fetch_json_response(&base, "unit test query", None, &client, true)
+            .await
+            .expect_err("expected non-json 200 to fail");
+        match err {
+            SearxFetchErr::Http { code, .. } => assert_eq!(code, 200),
+            e => panic!("expected Http err, got {e:?}"),
+        }
+    }
+
     #[test]
     fn docker_fallback_eligible_on_403_html() {
         let err = SearxFetchErr::Http {
@@ -1632,6 +1689,24 @@ mod searx_fetch_tests {
         let err = SearxFetchErr::Http {
             code: 500,
             body: r#"{"error":"upstream"}"#.into(),
+        };
+        assert!(!searx_custom_failure_eligible_for_docker_fallback(&err));
+    }
+
+    #[test]
+    fn docker_fallback_on_200_html_not_json() {
+        let err = SearxFetchErr::Http {
+            code: 200,
+            body: "<html><title>wrong</title></html>".into(),
+        };
+        assert!(searx_custom_failure_eligible_for_docker_fallback(&err));
+    }
+
+    #[test]
+    fn docker_fallback_not_on_200_valid_json() {
+        let err = SearxFetchErr::Http {
+            code: 200,
+            body: r#"{"results":[]}"#.into(),
         };
         assert!(!searx_custom_failure_eligible_for_docker_fallback(&err));
     }

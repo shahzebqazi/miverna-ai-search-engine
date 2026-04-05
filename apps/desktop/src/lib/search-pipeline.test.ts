@@ -4,8 +4,9 @@
  * 1. **Tauri runtime** — `searx_search` is a Tauri command. Running the UI in a normal browser
  *    (Vite only) cannot reach the backend; use `npm run tauri dev` or the packaged app.
  *
- * 2. **SearXNG JSON** — The Rust layer must receive HTTP 200 with a JSON body whose top-level
- *    `results` is an array. HTML error pages (OpenResty/nginx) produce zero hits here by design.
+ * 2. **SearXNG JSON** — The Rust layer must receive HTTP 200 with a body that looks like JSON
+ *    (`{` or `[` after BOM trim) and then parse `results`. HTML (even with HTTP 200) is rejected
+ *    upstream with a clear error before `normalizeSearxResults` runs.
  *
  * 3. **Built-in (Docker)** — Docker daemon running; container `minerva-searxng` healthy;
  *    host port (default 18080) must not be taken by another service (common failure: nginx on

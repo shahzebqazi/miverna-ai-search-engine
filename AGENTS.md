@@ -1,3 +1,10 @@
+## Agent guardrails (Git & deploy)
+
+- **Default:** Use a **feature branch**, **commit**, **push the branch**, and **open a PR** (or update an existing one). Do **not** push directly to `main`, merge to `main` without review, or run **production deploy** commands unless the user clearly asks for that in the same conversation.
+- **Explicit override:** When the user says they want a direct push to `main`, merge without PR, or a deploy, follow that instruction for that task only.
+- **Strongest enforcement:** In **GitHub → Settings → Branches**, add **branch protection** on `main` (required PR, required checks, block direct pushes). Cursor cannot bypass GitHub rules.
+- **Toggling in Cursor:** Use **Cursor Settings → Rules** for global defaults; this file (`AGENTS.md`) and **`.cursor/rules/*.mdc`** apply per project. For **Background / Cloud agents**, put stricter or looser instructions in the **task prompt** or your team’s agent template when you spin up a run. Comment or adjust rules there when you want a temporary stricter or looser mode—there is no single global “deploy toggle” in the app; combine **repo rules + project rules + per-task instructions**.
+
 ## Learned User Preferences
 
 - When implementing from an attached plan, do not edit the plan file itself.

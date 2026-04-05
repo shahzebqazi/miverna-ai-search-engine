@@ -30,7 +30,7 @@ packages/minerva-ir/dist/
 
 # IDE
 .idea/
-.cursor/
+# Cursor: track `.cursor/agents/` and `.cursor/rules/` via `.cursor/.gitignore`; ignore other local state
 
 # Logs / caches
 *.log

@@ -43,15 +43,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shahzebqazi/miverna-ai-search-engine.git"
+    "url": "git+https://github.com/shahzebqazi/minerva-ai-search-engine.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/shahzebqazi/miverna-ai-search-engine/issues"
+    "url": "https://github.com/shahzebqazi/minerva-ai-search-engine/issues"
   },
-  "homepage": "https://github.com/shahzebqazi/miverna-ai-search-engine#readme",
+  "homepage": "https://github.com/shahzebqazi/minerva-ai-search-engine#readme",
   "devDependencies": {
     "convex": "^1.34.1"
   }
